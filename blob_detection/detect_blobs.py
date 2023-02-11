@@ -45,6 +45,8 @@ annotated_img = cv2.drawKeypoints(annotated_img, keypoints, annotated_img,
     print(f"keypoint.response = {keypoint.response}")
     print(f"keypoint.size = {keypoint.size}")
 """
+print(f"keypoints = {keypoints}")
+print(f"type(keypoints) = {type(keypoints)}")
 
 # For each keypoint, floodfill to get the blob surface
 colored_blobs_img = np.zeros((mask.shape[0], mask.shape[1], 3), dtype=np.uint8)
@@ -52,6 +54,7 @@ running_ndx = 0
 
 center_to_points = {}
 center_to_boundingBox = {}
+center_to_blobImg = {}
 for keypoint in keypoints:
     center = (round(keypoint.pt[0]), (round(keypoint.pt[1])))
     inverse_mask_copy = cv2.cvtColor(copy.deepcopy(inverse_mask), cv2.COLOR_GRAY2BGR)
@@ -60,6 +63,9 @@ for keypoint in keypoints:
                       seedPoint=center,
                       newVal=color_from_index(running_ndx))
     blob_mask = inverse_mask_copy - cv2.cvtColor(inverse_mask, cv2.COLOR_GRAY2BGR)
+    grayscale_blob_mask = cv2.cvtColor(blob_mask, cv2.COLOR_BGR2GRAY)
+    retval, grayscale_blob_mask = cv2.threshold(grayscale_blob_mask, 0, 255, cv2.THRESH_BINARY)
+    center_to_blobImg[center] = grayscale_blob_mask
     # Get the non zero points
     non_zero_points_arr = cv2.findNonZero(cv2.cvtColor(blob_mask, cv2.COLOR_BGR2GRAY))
     center_to_points[center] = non_zero_points_arr
@@ -74,7 +80,15 @@ for keypoint in keypoints:
 
     running_ndx += 1
 
-
+# Extract blob moments
+for center, blob_img in center_to_blobImg.items():
+    print(f"center = {center}")
+    moments = cv2.moments(blob_img)
+    print(f"moments: \n{moments}")
+    number_of_points = len(center_to_points[center])
+    print(f"moments['m00']/255 = {moments['m00']/255}; number_of_points = {number_of_points}")
+    centroid = (moments['m10']/moments['m00'], moments['m01']/moments['m00'])
+    print(f"centroid = {centroid}")
 
 cv2.imwrite('./output/inverse_mask.png', inverse_mask)
 cv2.imwrite('./output/annotated.png', annotated_img)
