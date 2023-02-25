@@ -26,8 +26,8 @@ def main():
     erosion_dilation_kernel = np.ones((3, 3), dtype=np.uint8)
     low_red_mask = cv2.erode(low_red_mask, erosion_dilation_kernel)
     low_red_mask = cv2.dilate(low_red_mask, erosion_dilation_kernel)
-    # Dilate once more to include a bit more area in the periphery
-    low_red_mask = cv2.dilate(low_red_mask, erosion_dilation_kernel, iterations=2)
+    # Dilate a few more times to include a bit more area in the periphery
+    low_red_mask = cv2.dilate(low_red_mask, erosion_dilation_kernel, iterations=5)
     cv2.imwrite(os.path.join(output_directory, 'low_red_mask.png'), low_red_mask)
 
     # Blur the red channel image
