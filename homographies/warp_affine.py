@@ -4,7 +4,7 @@ import os
 import copy
 
 def main():
-    print(f"warm_affine.main()")
+    print(f"warp_affine.main()")
     output_directory = "./output"
     if not os.path.exists(output_directory):
         os.makedirs(output_directory)
@@ -51,8 +51,8 @@ def main():
     warped_image_size = (1200, 1200)
     warped_affine_img0 = cv2.warpAffine(images[0], affine_mtx0, dsize=warped_image_size)
     warped_affine_img1 = cv2.warpAffine(images[1], affine_mtx1, dsize=warped_image_size)
-    cv2.imwrite(os.path.join(output_directory, "0_warped.png"), warped_affine_img0)
-    cv2.imwrite(os.path.join(output_directory, "1_warped.png"), warped_affine_img1)
+    cv2.imwrite(os.path.join(output_directory, "0_warped_affine.png"), warped_affine_img0)
+    cv2.imwrite(os.path.join(output_directory, "1_warped_affine.png"), warped_affine_img1)
 
 def locate_corner(grayscale_img, corner, template_sizeHW, blur_size):
     template = np.zeros(template_sizeHW, dtype=np.uint8)
