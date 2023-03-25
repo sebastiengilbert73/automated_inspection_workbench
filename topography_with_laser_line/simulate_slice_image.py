@@ -16,8 +16,6 @@ def main(
     noiseAmplitude,
     saveImages
 ):
-    print("simulate_slice_image.main()")
-
     simulated_slice_img = np.zeros((img_sizeHW[0], img_sizeHW[1], 3), dtype=np.uint8)
 
     for x in range(img_sizeHW[1]):
