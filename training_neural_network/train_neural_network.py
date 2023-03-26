@@ -16,6 +16,7 @@ class TwoLayersPerceptron(torch.nn.Module):
         self.hidden_layer_size = hidden_layer_size
         self.number_of_outputs = number_of_outputs
         self.dropout_ratio = dropout_ratio
+        self.leakyrelu = torch.nn.LeakyReLU(negative_slope=0.01)
 
         self.linear1 = torch.nn.Linear(self.number_of_inputs, self.hidden_layer_size)
         self.linear2 = torch.nn.Linear(self.hidden_layer_size, self.number_of_outputs)
@@ -23,7 +24,8 @@ class TwoLayersPerceptron(torch.nn.Module):
 
     def forward(self, input_tsr):  # input_tsr.shape = (N, N_in):
         act1 = self.linear1(input_tsr)  # (N, H)
-        act2 = torch.nn.functional.relu(act1)  # (N, H)
+        #act2 = torch.nn.functional.relu(act1)  # (N, H)
+        act2 = self.leakyrelu(act1)  # (N, H)
         act3 = self.dropout(act2)  # (N, H)
         act4 = self.linear2(act3)  # (N, N_out)
         return act4
